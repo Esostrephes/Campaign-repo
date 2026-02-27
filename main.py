@@ -150,7 +150,7 @@ Source material about {leader.name}:
 {content}
 ---
 
-Generate exactly 5 multiple-choice quiz questions for this level.
+Generate exactly 10 multiple-choice quiz questions for this level.
 
 Rules:
 - Questions should feel engaging and natural, NOT like propaganda
