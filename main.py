@@ -169,10 +169,10 @@ Return ONLY a valid JSON array, no markdown, no explanation:
   }}
 ]
 """
+  
 
     try:
-    
-        client = Groq(api_key=os.getenv("GROQ_API_KEY"))
+      client = Groq(api_key=os.getenv("GROQ_API_KEY"))
         response = client.chat.completions.create(
             model="llama-3.1-8b-instant",
             messages=[{"role": "user", "content": prompt}],
@@ -186,7 +186,9 @@ Return ONLY a valid JSON array, no markdown, no explanation:
         return json.loads(raw.strip())
     except Exception:
         return get_fallback_questions(leader.name, level)
-
+      
+      
+        
 
 def get_fallback_questions(name: str, level: int) -> list:
     """Shown when leader profile isn't filled yet."""
@@ -1280,11 +1282,6 @@ def get_questions(level: int = 1, db: Session = Depends(get_db)):
     leader = get_leader(db)
     return generate_campaign_questions(leader, level)
     
-@app.get("/debug")
-
-def debug(db: Session = Depends(get_db)):
-    leader = get_leader(db)
-    try:
       
 
 @app.post("/register")
