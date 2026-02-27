@@ -3,5 +3,4 @@ uvicorn[standard]
 sqlalchemy
 psycopg2-binary
 apscheduler
-google-generativeai
 pydantic
