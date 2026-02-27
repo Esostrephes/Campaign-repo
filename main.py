@@ -1280,7 +1280,25 @@ def save_profile(payload: LeaderProfileUpdate, db: Session = Depends(get_db)):
 def get_questions(level: int = 1, db: Session = Depends(get_db)):
     leader = get_leader(db)
     return generate_campaign_questions(leader, level)
+    
+@app.get("/debug")
 
+def debug(db: Session = Depends(get_db)):
+    leader = get_leader(db)
+    try:
+        client = genai.Client(api_key=GEMINI_API_KEY)
+        response = client.models.generate_content(
+            model="gemini-2.0-flash",
+            contents="Say hello in one word"
+        )
+        return {
+            "leader_name": leader.name,
+            "achievements_len": len(leader.achievements or ""),
+            "gemini_key_set": bool(GEMINI_API_KEY),
+            "gemini_test": response.text
+        }
+    except Exception as e:
+        return {"error": str(e)}
 
 @app.post("/register")
 def register(payload: UserCreate, db: Session = Depends(get_db)):
