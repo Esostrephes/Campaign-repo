@@ -28,7 +28,7 @@ from groq import Groq
 
 # ─── ENV ──────────────────────────────────────────────────────────────────────
 DATABASE_URL = os.getenv("DATABASE_URL", "")
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
+GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
 SETUP_PASSWORD = os.getenv("SETUP_PASSWORD", "campaign2024")
 
 if DATABASE_URL.startswith("postgres://"):
