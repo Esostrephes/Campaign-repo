@@ -994,6 +994,9 @@ def build_student_html(leader: LeaderProfile) -> str:
   </div>
 
 </div>
+<div style="text-align:center;padding:16px;font-size:14px;color:#a0a0c0;position:fixed;bottom:0;left:0;right:0;z-index:998;background:linear-gradient(transparent,#050508 70%);pointer-events:none">
+  Built with ❤️ by <strong style="color:#ffffff;font-size:16px;letter-spacing:1px">Esostrephes4</strong>
+</div>
 <div class="toast" id="toast"></div>
 
 <script>
