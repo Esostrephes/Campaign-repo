@@ -172,14 +172,12 @@ Return ONLY a valid JSON array, no markdown, no explanation:
 
     try:
     
-        Client=GROQ.(api_key=os.Getenv("GROQ_API_KEY"))
-      
-        response=client.chat.completions.create(
-          model="llama-3.1-8b-instant",
-          messages=[{"role":"user","content":prompt}]
-          température=0.8,
+        client = Groq(api_key=os.getenv("GROQ_API_KEY"))
+        response = client.chat.completions.create(
+            model="llama-3.1-8b-instant",
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0.8,
         )
-      
         raw = response.choices[0].message.content.strip()
         if raw.startswith("```"):
             raw = raw.split("```")[1]
