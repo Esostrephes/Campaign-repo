@@ -24,7 +24,7 @@ from sqlalchemy.sql import func
 
 from apscheduler.schedulers.background import BackgroundScheduler
 from pydantic import BaseModel
-from google import genai
+from groq import Groq
 
 # ─── ENV ──────────────────────────────────────────────────────────────────────
 DATABASE_URL = os.getenv("DATABASE_URL", "")
@@ -131,7 +131,7 @@ def generate_campaign_questions(leader: LeaderProfile, level: int) -> list:
     if not content:
         return get_fallback_questions(leader.name, level)
 
-    if not GEMINI_API_KEY:
+    if not GROQ_API_KEY:
         return get_fallback_questions(leader.name, level)
 
     prompt = f"""
@@ -172,14 +172,15 @@ Return ONLY a valid JSON array, no markdown, no explanation:
 
     try:
     
-        client=genai.Client(api_key=GEMINI_API_KEY)
+        Client=GROQ.(api_key=os.Getenv("GROQ_API_KEY"))
       
-        response=Client.Models.generate_content(
-          model="gemini-2.0-flash",
-          contents=prompt
+        response=client.chat.completions.create(
+          model="llama-3.1-8b-instant",
+          messages=[{"role":"user","content":prompt}]
+          température=0.8,
         )
       
-        raw = response.text.strip()
+        raw = response.choices[0].message.content.strip()
         if raw.startswith("```"):
             raw = raw.split("```")[1]
             if raw.startswith("json"):
