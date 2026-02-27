@@ -7,7 +7,7 @@ Two modes:
 
 Add to Render env vars:
   SETUP_PASSWORD   → secret password only the leader/campaign team knows
-  (DATABASE_URL and OPENAI_API_KEY already set)
+  (DATABASE_URL and GEMINI_API_KEY already set)
 """
 
 import os, uuid, json, random, string
@@ -24,11 +24,11 @@ from sqlalchemy.sql import func
 
 from apscheduler.schedulers.background import BackgroundScheduler
 from pydantic import BaseModel
-from openai import OpenAI
+import google.generativeai as genai
 
 # ─── ENV ──────────────────────────────────────────────────────────────────────
 DATABASE_URL = os.getenv("DATABASE_URL", "")
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
+OPENAI_API_KEY = os.getenv("GEMINI_API_KEY", "")
 SETUP_PASSWORD = os.getenv("SETUP_PASSWORD", "campaign2024")
 
 if DATABASE_URL.startswith("postgres://"):
@@ -131,10 +131,11 @@ def generate_campaign_questions(leader: LeaderProfile, level: int) -> list:
     if not content:
         return get_fallback_questions(leader.name, level)
 
-    if not OPENAI_API_KEY:
+    if not GEMINI_API_KEY:
         return get_fallback_questions(leader.name, level)
 
-    client = OpenAI(api_key=OPENAI_API_KEY)
+    genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+model = genai.GenerativeModel("gemini-1.5-flash")
 
     prompt = f"""
 You are a political campaign strategist and psychology expert designing a student quiz app
@@ -173,12 +174,10 @@ Return ONLY a valid JSON array, no markdown, no explanation:
 """
 
     try:
-        response = client.chat.completions.create(
-            model="gpt-4o-mini",
-            messages=[{"role": "user", "content": prompt}],
-            temperature=0.8,
-        )
-        raw = response.choices[0].message.content.strip()
+      genai.configure(api_key=GEMINI_API_KEY)
+        model = genai.GenerativeModel("gemini-1.5-flash")
+        response = model.generate_content(prompt)
+        raw = response.text.strip()
         if raw.startswith("```"):
             raw = raw.split("```")[1]
             if raw.startswith("json"):
@@ -186,7 +185,7 @@ Return ONLY a valid JSON array, no markdown, no explanation:
         return json.loads(raw.strip())
     except Exception:
         return get_fallback_questions(leader.name, level)
-
+        
 
 def get_fallback_questions(name: str, level: int) -> list:
     """Shown when leader profile isn't filled yet."""
