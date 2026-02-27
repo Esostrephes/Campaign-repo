@@ -24,7 +24,7 @@ from sqlalchemy.sql import func
 
 from apscheduler.schedulers.background import BackgroundScheduler
 from pydantic import BaseModel
-import google.generativeai as genai
+from google import genai
 
 # ─── ENV ──────────────────────────────────────────────────────────────────────
 DATABASE_URL = os.getenv("DATABASE_URL", "")
@@ -171,9 +171,14 @@ Return ONLY a valid JSON array, no markdown, no explanation:
 """
 
     try:
-        genai.configure(api_key=GEMINI_API_KEY)
-        model = genai.GenerativeModel("gemini-1.5-flash")
-        response = model.generate_content(prompt)
+    
+        client=genai.Client(api_key=GEMINI_API_KEY)
+      
+        response=Client.Models.generate_content(
+          model="gemini-2.0-flash",
+          contents=prompt
+        )
+      
         raw = response.text.strip()
         if raw.startswith("```"):
             raw = raw.split("```")[1]
