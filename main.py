@@ -963,6 +963,9 @@ def build_student_html(leader: LeaderProfile) -> str:
   </div>
 
 </div>
+<div style="text-align:center;padding:20px 0 8px;font-size:12px;color:#3a3a50">
+  Built with ❤️ by <strong style="color:#6b6b80">Moses Nduguli</strong>
+</div>
 <div class="toast" id="toast"></div>
 
 <script>
